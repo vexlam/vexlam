@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Öğrenci Ekle</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .soft-blue { background-color: #E7F3FF; }
+    .soft-green { background-color: #D8FBD8; }
+    .warning-red { background-color: #FFD1D1; }
+    .soft-yellow { background-color: #FFF3CD; }
+    .bold-label { font-weight: bold; }
+    .container {
+    max-width: 900px; /* Genişliği artır */
+    width: 60%; /* Ekrana yayılmasını sağla */
+}
+
+
+
+
+.card {
+    width: 90%; /* Kartın genişliğini ayarla */
+    max-width: 1100px; /* Maksimum genişlik belirle */
+    margin: auto; /* Ortaya hizala */
+}
+
+    .submit-container { text-align: right; margin-top: -50px; }
+    .submit-container button {
+    width: 30%; /* Butonu tam genişlik yapar */
+}
+
+
+
+  </style>
+</head>
+<body>
+
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    
+
+  <!-- Üst Menü -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('home') }}">🏠 Ana Sayfa</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('list_students') }}">📋 Öğrenci Listesi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('attendance') }}">✅ Yoklama</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('payment_tracking') }}">💳 Ödeme Takibi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('seans_takvimi') }}">📆 Seans Takvimi</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_panel') }}">⚙️ Admin Paneli</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Öğrenci Ekleme Formu -->
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">📝 Yeni Öğrenci Ekle</h2>
+    <div class="card shadow p-4">
+      <form id="add_student_form" action="{{ url_for('add_student') }}" method="post">
+        <div class="row">
+          <div class="col-md-6">
+            
+            <label class="bold-label">Kayıt Tarihi:</label>
+            <input type="text" id="kayit_tarihi" name="kayit_tarihi" class="form-control mb-2" readonly>
+            
+            <label class="bold-label">Ad:</label>
+            <input type="text" name="ad" class="form-control mb-2" required>
+
+            <label class="bold-label">Soyad:</label>
+            <input type="text" name="soyad" class="form-control mb-2" required>
+
+            <label class="bold-label">TC Kimlik No:</label>
+            <input type="text" name="tc" class="form-control mb-2" required pattern="^[0-9]{11}$">
+
+            <label class="bold-label">Doğum Tarihi:</label>
+            <input type="date" name="dogum_tarihi" class="form-control mb-2" required>
+
+            <label class="bold-label">Veli Adı:</label>
+            <input type="text" name="veli_adi" class="form-control mb-2" required>
+
+            <label class="bold-label">Veli Telefon:</label>
+            <input type="tel" name="veli_telefon" class="form-control mb-2" required pattern="^[0-9]{11}$">
+
+            <label class="bold-label">Kalan Ücret:</label>
+            <input type="text" id="kalan_miktar" name="kalan_odeme" class="form-control warning-red mb-2" readonly>
+
+                   
+
+
+          </div>
+
+          <div class="col-md-6">   
+
+            <label class="bold-label">Seans Türü:</label>
+            <select id="seans_turu" name="seans_turu" class="form-select soft-blue mb-2" required>
+              <option value="">Seçiniz</option>
+            </select>         
+
+            <label class="bold-label">Seans Ücreti:</label>
+            <input type="text" id="seans_fiyat" name="seans_fiyat" class="form-control warning-red mb-2" readonly>
+
+            <label class="bold-label">Seans Saati:</label>
+            <select id="seans_saati" name="seans_saati" class="form-select soft-green mb-2" required></select>
+
+            <label class="bold-label">Seans Günleri:</label>
+            <input type="text" id="seans_gunleri" name="seans_gunleri" class="form-control mb-2" readonly>
+
+            <label class="bold-label">Seans Sayısı:</label>
+            <input type="text" id="seans_sayisi" name="seans_sayisi" class="form-control soft-yellow mb-2" readonly>
+
+            <label class="bold-label">Ödeme Türü:</label>
+            <select id="odeme_turu" name="odeme_turu" class="form-select mb-2" required>
+            <option value="">Seçiniz</option>
+            <option value="nakit">Nakit</option>
+            <option value="havale">Havale/EFT</option>
+            </select>
+
+            <label class="bold-label">Ödenen Ücret:</label>
+            <input type="number" id="odenen_miktar" name="odenen_miktar" class="form-control soft-yellow mb-2" oninput="calculateRemaining()">
+
+          
+
+          </div>
+          
+          <div class="submit-container text-end mb-2">
+          <button type="submit" class="btn btn-primary">📩 Kaydet</button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+
+
+
+document.getElementById("seans_turu").addEventListener("change", function() {
+    let selectedTitle = this.value;
+    fetch("/api/seanslar")
+        .then(response => response.json())
+        .then(data => {
+            let selectedSeans = data.find(seans => seans.title === selectedTitle);
+            if (selectedSeans) {
+                document.getElementById("seans_fiyat").value = selectedSeans.fee + " TL";
+                
+                // 🆕 Seans Günlerini Düzgün Şekilde Çek
+                let seansGunleriField = document.getElementById("seans_gunleri");
+                if (Array.isArray(selectedSeans.days)) {
+                    seansGunleriField.value = selectedSeans.days.join(", ");  // Diziyi stringe çevir
+                } else if (typeof selectedSeans.days === "string") {
+                    try {
+                        let daysArray = JSON.parse(selectedSeans.days);
+                        seansGunleriField.value = daysArray.join(", ");
+                    } catch (error) {
+                        console.error("Günleri işlerken hata:", error);
+                        seansGunleriField.value = "Tanımsız";
+                    }
+                } else {
+                    seansGunleriField.value = "Tanımsız";
+                }
+
+                document.getElementById("seans_sayisi").value = selectedSeans.count + " Seans";
+                
+                let seansSaatiSelect = document.getElementById("seans_saati");
+                seansSaatiSelect.innerHTML = ""; // Önce temizle
+                let option = document.createElement("option");
+                option.value = selectedSeans.time;
+                option.textContent = selectedSeans.time;
+                seansSaatiSelect.appendChild(option);
+            }
+        })
+        .catch(error => console.error("⚠️ Seans bilgileri getirilemedi:", error));
+});
+
+
+
+
+      calculateRemaining();
+    
+
+    function calculateRemaining() {
+      let fiyat = parseFloat(document.getElementById("seans_fiyat").value) || 0;
+      let odenen = parseFloat(document.getElementById("odenen_miktar").value) || 0;
+      document.getElementById("kalan_miktar").value = (fiyat - odenen) + " TL";
+    }
+
+    document.getElementById("add_student_form").addEventListener("submit", function(event) {
+    let odemeTuru = document.getElementById("odeme_turu").value;
+    if (!odemeTuru) {
+        alert("Lütfen bir ödeme türü seçiniz!");
+        event.preventDefault();
+        return false;
+    }
+});
+
+
+    
+    
+document.querySelector("#add_student_form").addEventListener("submit", function(event) {
+    let seansTuru = document.getElementById("seans_turu").value;
+    let seansFiyat = document.getElementById("seans_fiyat").value;
+    let seansSaati = document.getElementById("seans_saati").value;
+    let odemeTuru = document.getElementById("odeme_turu").value;
+
+    if (!seansTuru || !seansFiyat || !seansSaati || !odemeTuru) {
+        alert("❌ Lütfen tüm alanları doldurunuz!");
+        event.preventDefault();
+        return;
+    }
+
+    console.log("✔ Form verileri eksiksiz!");
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/api/seanslar")
+        .then(response => response.json())
+        .then(data => {
+            console.log("✔ Seans Türleri:", data); // Konsolda kontrol et
+            let seansTuruSelect = document.getElementById("seans_turu");
+            seansTuruSelect.innerHTML = '<option value="">Seçiniz</option>'; // Varsayılan boş seçenek ekle
+
+            data.forEach(seans => {
+                let option = document.createElement("option");
+                option.value = seans.title; // Seansın adını value olarak ata
+                option.textContent = `${seans.title} (${seans.fee} TL)`; // Seans adını ve ücretini göster
+                seansTuruSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("⚠️ API'den Seanslar Alınamadı:", error));
+});
+
+
+
+    
+    window.onload = function() {
+      document.getElementById("kayit_tarihi").value = new Date().toISOString().split('T')[0];
+    };
+  </script>
+</body>
+</html>

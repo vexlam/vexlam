@@ -1,0 +1,248 @@
+/* Genel Sayfa Ayarları */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    max-width: 100%;
+}
+
+/* Navbar Ayarları */
+nav {
+    background-color: #343a40;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    background-color: #007bff;
+}
+
+/* Sayfa Konteyner */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+/* Durum Kartları */
+.status-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+    min-width: 200px;
+    max-width: 300px;
+}
+
+/* Buton Stilleri */
+.button {
+    display: inline-block;
+    padding: 12px 18px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Tablo Stilleri */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .status-cards {
+        flex-direction: column;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        padding: 20px;
+    }
+}
+
+/* Popup Container */
+.popup-container {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Popup İçeriği */
+.popup {
+    background: #fff;
+    width: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Kapat Butonu */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Butonları Şekillendir */
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Ödeme Butonu */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Navbar Düzeni */
+.navbar {
+    height: 100px; /* Navbar yüksekliği sabit */
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+/* Takvim */
+#calendar {
+    max-width: 80%;
+    margin: auto;
+    padding: 10px;
+}
+.fc-event {
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* 🔹 🔹 🔹 FORM VE PRINT AYARLARI 🔹 🔹 🔹 */
+
+/* 📌 Formları Sayfayı Bozmadan Düzgün Hale Getirme */
+.form-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+}
+
+/* Başlıkları Ortala */
+h1, h2, h3 {
+    text-align: center;
+    color: #2C3E50;
+}
+
+/* Bölümleri Ayıran Çizgi */
+.divider {
+    border-bottom: 2px solid black;
+    margin: 10px 0;
+}
+
+/* Form İçinde Önemli Bilgiler */
+.info {
+    font-weight: bold;
+}
+
+/* Yazdır Butonu */
+.print-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.print-button:hover {
+    background: #2980b9;
+}
+
+/* Yazdırma Modunda Butonları ve Navbar'ı Gizle */
+@media print {
+    .print-button, nav, .navbar {
+        display: none;
+    }
+}

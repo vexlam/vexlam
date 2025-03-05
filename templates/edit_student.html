@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Bilgilerini Güncelle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        .soft-blue { background-color: #E7F3FF; }
+        .soft-green { background-color: #D8FBD8; }
+        .warning-red { background-color: #FFD1D1; }
+        .soft-yellow { background-color: #FFF3CD; }
+        .bold-label { font-weight: bold; }
+        .container {
+        max-width: 900px; /* Genişliği artır */
+        width: 60%; /* Ekrana yayılmasını sağla */
+    }
+    
+    
+    
+    
+    .card {
+        width: 90%; /* Kartın genişliğini ayarla */
+        max-width: 1100px; /* Maksimum genişlik belirle */
+        margin: auto; /* Ortaya hizala */
+    }
+    
+        .submit-container { text-align: right; margin-top: -50px; }
+        .submit-container button {
+        width: 30%; /* Butonu tam genişlik yapar */
+    }
+    
+    
+    
+      </style>
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">🏠 Ana Sayfa</a></li>
+            <li><a href="{{ url_for('list_students') }}">📋 Öğrenci Listesi</a></li>
+            <li><a href="{{ url_for('attendance') }}">✅ Yoklama</a></li>
+            <li><a href="{{ url_for('payment_tracking') }}">💳 Ödeme Takibi</a></li>
+            <li><a href="{{ url_for('seans_takvimi') }}">📆 Seans Takvimi</a></li>
+            <li><a href="{{ url_for('admin_panel') }}">⚙️ Admin Paneli</a></li>
+        </ul>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+            <h3 class="text-center text-primary mb-4">
+                ✏️ Öğrenci Bilgilerini Düzenle
+            </h3>
+            <form action="{{ url_for('edit_student', student_id=student.id) }}" method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ad" class="form-label">Ad:</label>
+                        <input type="text" id="ad" name="ad" class="form-control" value="{{ student.ad or '' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="soyad" class="form-label">Soyad:</label>
+                        <input type="text" id="soyad" name="soyad" class="form-control" value="{{ student.soyad or '' }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="tc" class="form-label">TC Kimlik No:</label>
+                        <input type="text" id="tc" name="tc" class="form-control" value="{{ student.tc or '' }}" required pattern="\d{11}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="dogum_tarihi" class="form-label">Doğum Tarihi:</label>
+                        <input type="date" id="dogum_tarihi" name="dogum_tarihi" class="form-control" value="{{ student.dogum_tarihi or '' }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="odeme_turu" class="form-label">Ödeme Türü:</label>
+                        <select id="odeme_turu" name="odeme_turu" class="form-select" required>
+                            <option value="nakit" {% if student.odeme_turu == 'nakit' %}selected{% endif %}>Nakit</option>
+                            <option value="havale" {% if student.odeme_turu == 'havale' %}selected{% endif %}>Havale</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="odenen_miktar" class="form-label">Ödenen Miktar:</label>
+                        <input type="number" id="odenen_miktar" name="odenen_miktar" class="form-control" value="{{ student.odenen_miktar or 0 }}" required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="kalan_odeme" class="form-label">Kalan Ödeme:</label>
+                        <input type="number" id="kalan_odeme" name="kalan_odeme" class="form-control" value="{{ student.kalan_odeme or 0 }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="veli_adi" class="form-label">Veli Adı:</label>
+                        <input type="text" id="veli_adi" name="veli_adi" class="form-control" value="{{ student.veli_adi or '' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="veli_telefon" class="form-label">Veli Telefon:</label>
+                        <input type="tel" id="veli_telefon" name="veli_telefon" class="form-control" value="{{ student.veli_telefon or '' }}" required pattern="\d{11}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="seans_turu" class="form-label">Seans Türü:</label>
+                        <select id="seans_turu" name="seans_turu" class="form-select" required>
+                            <option value="GDO-115" {% if student.seans_turu == 'GDO-115' %}selected{% endif %}>GDO-115</option>
+                            <option value="GDO-130" {% if student.seans_turu == 'GDO-130' %}selected{% endif %}>GDO-130</option>
+                            <option value="GA-200" {% if student.seans_turu == 'GA-200' %}selected{% endif %}>GA-200</option>
+                            <option value="AH-400" {% if student.seans_turu == 'AH-400' %}selected{% endif %}>AH-400</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="seans_saati" class="form-label">Seans Saati:</label>
+                        <input type="text" id="seans_saati" name="seans_saati" class="form-control" value="{{ student.seans_saati or '' }}" readonly>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="notlar" class="form-label">Öğrenci Notları:</label>
+                    <textarea id="notlar" name="notlar" class="form-control">{{ student.notlar or '' }}</textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-lg">💾 Güncelle</button>
+                </div>
+            </form>
+    </div>
+    
+
+</body>
+</html>

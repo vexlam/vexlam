@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Formu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Öğrenci Bilgileri</h1>
+    <p>Ad: {{ student.ad }}</p>
+    <p>Soyad: {{ student.soyad }}</p>
+    <p>Veli Adı: {{ student.veli_adi }}</p>
+    <p>Veli Telefon: {{ student.veli_telefon }}</p>
+    <p>Seans Türü: {{ student.seans_turu }}</p>
+    <p>Seans Saati: {{ student.seans_saati }}</p>
+</body>
+</html>

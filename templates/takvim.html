@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seans Takvimi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- FullCalendar Kütüphanesi -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+
+
+<body>
+
+    {% include 'navbar.html' %}
+
+     
+    <div class="container">
+        <div id="calendar"></div> <!-- Takvim buraya yüklenecek -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                events: "/api/seanslar",  // 📌 Flask API'den dinamik veri çek
+                eventClick: function(info) {
+                    alert('Seans Bilgisi: ' + info.event.title + '\nSaat: ' + info.event.extendedProps.time);
+                }
+            });
+            calendar.render();
+        });
+    </script>
+    
+
+</body>
+</html>

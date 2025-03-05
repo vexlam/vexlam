@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seans Ekle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4" style="max-width: 900px;">
+        <h2 class="text-center mb-4">➕ Yeni Seans Ekle</h2>
+        <form id="seansForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="session_name" class="form-label">Seans Türü:</label>
+                        <input type="text" id="session_name" name="session_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="session_date" class="form-label">Başlangıç Tarihi:</label>
+                        <input type="date" id="session_date" name="session_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="seans_gunleri" class="form-label">Seans Günleri:</label>
+                        <select id="seans_gunleri" name="seans_gunleri" class="form-control" multiple required>
+                        <option value="Pazartesi">Pazartesi</option>
+                        <option value="Salı">Salı</option>
+                        <option value="Çarşamba">Çarşamba</option>
+                        <option value="Perşembe">Perşembe</option>
+                        <option value="Cuma">Cuma</option>
+                        <option value="Cumartesi">Cumartesi</option>
+                        <option value="Pazar">Pazar</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="session_time" class="form-label">Seans Saati:</label>
+                        <input type="text" id="session_time" name="session_time" class="form-control" placeholder="Örn: 10:00 - 11:30" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="session_fee" class="form-label">Seans Ücreti (TL):</label>
+                        <input type="number" id="session_fee" name="session_fee" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="session_count" class="form-label">Seans Sayısı:</label>
+                        <input type="number" id="session_count" name="session_count" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">📩 Kaydet</button>
+        </form>
+    </div>
+
+    <div class="container mt-4" style="max-width: 900px;">
+        <h2 class="text-center mb-4">📋 Eklenen Seanslar</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Seans Türü</th>
+                    <th>Tarih</th>
+                    <th>Gün</th>
+                    <th>Saati</th>
+                    <th>Ücret (TL)</th>
+                    <th>Seans Sayısı</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody id="seans_table">
+                <tr><td colspan="7" class="text-center">Seans bulunamadı!</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    fetchSeansList();  // Seansları listele
+
+    let seansGunleriElement = document.querySelector("#seans_gunleri");
+
+    if (!seansGunleriElement) {
+        console.error("❌ HATA: #seans_gunleri bulunamadı!");
+        return;
+    }
+
+    document.querySelector("#seansForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Seans Günleri elementinin bulunduğundan emin ol
+        let selectedDaysElement = document.querySelector("#seans_gunleri");
+        if (!selectedDaysElement) {
+            console.error("❌ HATA: #seans_gunleri öğesi bulunamadı!");
+            return;
+        }
+
+        let selectedDays = Array.from(selectedDaysElement.selectedOptions).map(option => option.value);
+
+        let payload = {
+            session_name: document.querySelector("#session_name").value,
+            session_date: document.querySelector("#session_date").value,
+            session_time: document.querySelector("#session_time").value,
+            session_fee: document.querySelector("#session_fee").value,
+            session_count: document.querySelector("#session_count").value,
+            session_days: selectedDays  // ✅ JSON formatında gönder
+        };
+
+        console.log("📌 Gönderilen Payload:", payload);
+
+        fetch("/add_seans", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("✅ Seans başarıyla eklendi!", data);
+                fetchSeansList();
+                document.querySelector("#seansForm").reset();
+            } else {
+                alert("⚠️ Seans eklenirken hata oluştu: " + data.message);
+            }
+        })
+        .catch(error => console.error("⚠️ Hata:", error));
+    });
+});
+
+
+document.getElementById("seans_turu").addEventListener("change", function() {
+    let selectedSeans = this.value;
+    console.log("✅ Seçilen Seans Türü:", selectedSeans);
+
+    fetch("http://127.0.0.1:5000/api/seans_takvimi")
+        .then(response => response.json())
+        .then(data => {
+            let seans = data.find(s => s.session_name === selectedSeans);
+            if (seans) {
+                let fiyatInput = document.getElementById("seans_fiyat");
+                let saatInput = document.getElementById("seans_saati");
+
+                if (fiyatInput && saatInput) {
+                    fiyatInput.value = seans.session_fee;
+                    saatInput.value = seans.session_time;
+                    console.log("✅ Seans Bilgileri Güncellendi:", seans);
+                } else {
+                    console.error("❌ Form inputları bulunamadı!");
+                }
+            } else {
+                console.log("⚠️ Seans Bulunamadı:", selectedSeans);
+            }
+        })
+        .catch(error => console.error("⚠️ API Hatası:", error));
+});
+
+
+
+
+// ✅ API'den Seansları Çek ve Tabloya Ekle
+function fetchSeansList() {
+    fetch("/api/seanslar")
+    .then(response => response.json())
+    .then(data => {
+        console.log("✅ API'den Gelen Seans Verisi:", data);
+
+        let seansTable = document.getElementById("seans_table");
+        seansTable.innerHTML = "";  
+
+        if (!data || data.length === 0) {
+            seansTable.innerHTML = "<tr><td colspan='7' class='text-center'>Seans bulunamadı!</td></tr>";
+            return;
+        }
+
+        data.forEach(seans => {
+            let daysValue;
+            try {
+                daysValue = Array.isArray(seans.days) ? seans.days.join(", ") : JSON.parse(seans.days).join(", ");
+            } catch (e) {
+                console.error("⚠️ Günleri işlerken hata oluştu:", e);
+                daysValue = seans.days || "Tanımsız"; // JSON hatası olursa düz string göster
+            }
+
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${seans.title}</td>
+                <td>${seans.start}</td>
+                <td>${daysValue}</td>
+                <td>${seans.time}</td>
+                <td>${seans.fee ? seans.fee.toLocaleString("tr-TR") + " TL" : "Bilinmiyor"}</td>
+                <td>${seans.count || "Bilinmiyor"}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSeans(${seans.id})">Sil</button>
+                </td>
+            `;
+            seansTable.appendChild(row);
+        });
+
+        console.log("✅ Seanslar başarıyla tabloya eklendi!");
+    })
+    .catch(error => console.error("⚠️ Seansları çekerken hata oluştu:", error));
+}
+
+// ✅ Seans Silme Fonksiyonu
+function deleteSeans(seansId) {
+    if (!confirm("Bu seansı silmek istediğinizden emin misiniz?")) return;
+
+    fetch(`/delete_seans/${seansId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("✅ Seans başarıyla silindi!");
+            fetchSeansList();  // Güncellenmiş listeyi tekrar çek!
+        } else {
+            alert("⚠️ Silme işlemi başarısız: " + data.message);
+        }
+    })
+    .catch(error => console.error("Seans silerken hata oluştu:", error));
+}
+
+
+    
+    </script>
+
+</body>
+</html>

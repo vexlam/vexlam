@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seans Grupları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+        <h2 class="mb-4 text-center">📌 Seans Grupları</h2>
+
+        {% for kategori, seanslar in seans_listesi.items() %}
+        <h3 class="mt-4">{{ kategori }}</h3>
+        <div class="accordion" id="{{ kategori|replace(' ', '') }}">
+            {% for seans, ogrenciler in seanslar.items() %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ kategori|replace(' ', '') }}{{ loop.index }}">
+                        📅 **{{ seans }}** ({{ ogrenciler|length }} Öğrenci)
+                    </button>
+                </h2>
+                <div id="collapse{{ kategori|replace(' ', '') }}{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#{{ kategori|replace(' ', '') }}">
+                    <div class="accordion-body">
+                        <ul class="list-group">
+                            {% for ogrenci in ogrenciler %}
+                            <li class="list-group-item">
+                                👨‍🎓 {{ ogrenci.ad }} {{ ogrenci.soyad }} | 🕒 {{ ogrenci.seans_saati }} | 📅 {{ ogrenci.seans_gunleri }}
+                                <a href="{{ url_for('attendance', seans_turu=seans, seans_saati=ogrenci.seans_saati) }}" class="btn btn-primary btn-sm float-end">
+                                    📌 Yoklama Al
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

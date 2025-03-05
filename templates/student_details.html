@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Detayları</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-custom {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .custom-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .icon {
+            margin-right: 8px;
+        }
+        .table th {
+            text-align: center;
+            background-color: #343a40;
+            color: white;
+        }
+        .table td {
+            text-align: center;
+        }
+        .btn-back {
+            margin-top: 15px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+        .payment-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">📌 Öğrenci Detayları</h2>
+
+        <div class="row">
+            <!-- Öğrenci Bilgileri Kartı -->
+            <div class="col-md-4">
+                <div class="card card-custom">
+                    <div class="custom-header">Öğrenci Bilgileri</div>
+                    <div class="card-body">
+                        <p><strong>👤 Ad Soyad:</strong> {{ student['ad'] }} {{ student['soyad'] }}</p>
+                        <p><strong>📞 Veli:</strong> {{ student['veli_adi'] }} - {{ student['veli_telefon'] }}</p>
+                        <p><strong>📚 Seans Türü:</strong> {{ student['seans_turu'] }}</p>
+                        <p><strong>⏰ Seans Saati:</strong> {{ student['seans_saati'] }}</p>
+                        <p><strong>🚨 Devamsızlık:</strong> <span class="text-danger">{{ student['devamsizlik'] }} gün</span></p>
+                        <a href="{{ url_for('edit_student', student_id=student['id']) }}" class="btn btn-warning w-100">✏️ Öğrenciyi Güncelle</a>
+                        <a href="{{ url_for('student_form', student_id=student.id) }}" class="print-button"> 📄 Veli Bilgilendirme Formunu Görüntüle
+                        </a>
+                        
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yoklama Geçmişi -->
+            <div class="col-md-8">
+                <h3>📅 Yoklama Geçmişi</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_history %}
+                        <tr>
+                            <td>{{ record['tarih'] }}</td>
+                            <td>
+                                {% if record['yoklama_durumu'] == "Geldi" %}
+                                    <span class="text-success">✅ Geldi</span>
+                                {% elif record['yoklama_durumu'] == "Gelmedi" %}
+                                    <span class="text-danger">❌ Gelmedi</span>
+                                {% else %}
+                                    <span class="text-warning">⚠️ Bilinmiyor</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Ödeme Geçmişi -->
+        <div class="payment-section">
+            <h3>💰 Ödeme Geçmişi</h3>
+            {% if payment_history %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tutar</th>
+                        <th>Ödeme Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payment_history %}
+                    <tr>
+                        <td>{{ payment['amount'] }}₺</td>
+                        <td>{{ payment['payment_date'] }}</td>
+                        <td>{{ payment['status'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-danger">❌ Henüz ödeme yapılmamış.</p>
+            {% endif %}
+        </div>
+
+        <br>
+        <button onclick="window.history.back()" class="btn btn-back">🔙 Geri Dön</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
